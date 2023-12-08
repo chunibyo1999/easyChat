@@ -11,6 +11,9 @@ from functools import partial
 
 
 # 定时发送子线程类
+import time
+from PyQt5.QtCore import QThread
+
 class ClockThread(QThread):
     def __init__(self):
         super().__init__()
@@ -28,16 +31,20 @@ class ClockThread(QThread):
         while self.time_counting:
             localtime = time.localtime(time.time())
             hour = localtime.tm_hour % 24
-            min = localtime.tm_min % 60
+            minute = localtime.tm_min % 60
+            weekday = localtime.tm_wday + 1  # tm_wday范围是0~6，需要加1转换为1~7的表示（周一到周日）
 
             for i in range(self.clocks.count()):
-                clock_hour, clock_min, st_ed = self.clocks.item(i).text().split(" ")
+                clock_time, clock_weekday, st_ed = self.clocks.item(i).text().split(" ")
+                clock_hour, clock_min = map(int, clock_time.split(":"))
                 st, ed = st_ed.split('-')
-                if int(clock_hour) == hour and int(clock_min) == min:
+                clock_weekday = int(clock_weekday)
+
+                if clock_weekday == weekday and int(clock_hour) == hour and int(clock_min) == minute:
                     self.send_func(st=int(st), ed=int(ed))
                     # self.send_func()
-            time.sleep(60)
 
+            time.sleep(60)  # 延迟一分钟
 
 class MyListWidget(QListWidget):
     """支持双击可编辑的QListWidget"""
