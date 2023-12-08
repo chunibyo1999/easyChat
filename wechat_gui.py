@@ -112,25 +112,25 @@ class WechatGUI(QWidget):
 
         return hbox
 
-    # 定时功能界面的初始化
-    def init_clock(self):
-        # 按钮响应：增加时间
-        def add_contact():
-            inputs = ["小时（0~23）",
-                      "分钟(0~59)",
-                      "发送信息的起点（从哪一条开始发）",
-                      "发送信息的终点（到哪一条结束，包括该条）"]
-            dialog = MultiInputDialog(inputs)
-            if dialog.exec_() == QDialog.Accepted:
-                hour, min, st, ed = dialog.get_input()
-                if hour == "" or min == "" or st == "" or ed == "":
-                    QMessageBox.warning(self, "输入错误", "输入不能为空！")
-                    return
+   # 定时功能界面的初始化
+def init_clock(self):
+    # 按钮响应：增加时间
+    def add_contact():
+        inputs = ["周几（1~7）",
+                  "小时（0~23）",
+                  "分钟(0~59)",
+                  "发送信息的起点（从哪一条开始发）",
+                  "发送信息的终点（到哪一条结束，包括该条）"]
+        dialog = MultiInputDialog(inputs)
+        if dialog.exec_() == QDialog.Accepted:
+            weekday, hour, minute, st, ed = dialog.get_input()
+            if weekday == "" or hour == "" or minute == "" or st == "" or ed == "":
+                QMessageBox.warning(self, "输入错误", "输入不能为空！")
+                return
+            else:
+                input = f"{hour}:{minute} 周{weekday} {st}-{ed}"
+                self.time_view.addItem(input)
                 
-                else:
-                    input = f"{hour} {min} {st}-{ed}"
-                    self.time_view.addItem(input)
-
         # 按钮响应：删除时间
         def del_contact():
             for i in range(self.time_view.count() - 1, -1, -1):
